@@ -1,75 +1,116 @@
 <script>
-    import { downloadBlobAsFile, getValueFromIndex } from './Helper'
+    import { downloadBlobAsFile, getValueFromIndex, mapObjectToComputer, convertComputersToXml, convertComputersToTxt } from './Helper'
     import { onMount, afterUpdate, beforeUpdate } from "svelte"
-    // import convert from 'xml-js'
+    import convert from 'xml-js'
     export let data
     export let typeOfData
-    let txtData = ''
-    let xmlData = ''
     let computers = []
+    $: computers = typeOfData === 'txt'
+            ? createComputersFromTxt()
+            : createComputersFromXml()
+    $: txtData = convertComputersToTxt(computers)
+    $: xmlData = convertComputersToXml(computers)
 
-    onMount(() => {
-        console.log(typeOfData)
-        createComputersObject()
-    })
     function saveFile (mode) {
-        const blob = new Blob([mode === 'txt' ? txtData : xmlData], { type: `text/${mode};charset=utf-8` })
+      const blobData = mode === 'txt' ? txtData : xmlData
+        console.log(blobData)
+        const blob = new Blob([blobData], { type: `text/${mode};charset=utf-8` })
         downloadBlobAsFile(blob, `data.${mode}`)
     }
     function inputChanged (e) {
-        computers[e.path[2].attributes[1].value].flat[e.target.attributes[0].value] = e.target.value
-        setTxtDataFromComputers()
-    }
-    function setTxtDataFromComputers () {
-        if (computers.length === 0)  return ''
-        let localData = ''
-        computers.forEach((computer, computersIndex) => {
-            Object.entries(computer.flat).forEach((entry, index) => {
-                    localData += `${entry[1]};`
-                if (computersIndex !== computers.length - 1 && index === 14) {
-                    localData += `\n`
-                }
-            })
-        })
-        data = txtData = localData
-        createComputersObject()
-    }
-    function createComputersObject () {
-        typeOfData === 'txt'
-            ? createComputersFromTxt()
-            : createComputersFromXml()
+        const field = e.target.attributes[0].value
+        const computerIndex = e.path[2].attributes[1].value
+        const parameter = e.target.value
+        computers[computerIndex].flat[field] = parameter
+        switch (field) {
+            case "manufacturer":
+              computers[computerIndex].manufacturer = parameter
+                break
+            case "size":
+              computers[computerIndex].screen.size = parameter
+                break
+            case "resolution":
+              computers[computerIndex].screen.resolution = parameter
+                break
+            case "screen_type":
+              computers[computerIndex].screen.screen_type = parameter
+                break
+            case "touchscreen":
+              computers[computerIndex].screen.touchscreen = parameter
+                break
+            case "name":
+              computers[computerIndex].processor.name = parameter
+                break
+            case "physical_cores":
+              computers[computerIndex].processor.physical_cores = parameter
+                break
+            case "clock_speed":
+              computers[computerIndex].processor.clock_speed = parameter
+                break
+            case "ram":
+              computers[computerIndex].ram = parameter
+                break
+            case "storage":
+              computers[computerIndex].disc.storage = parameter
+                break
+            case  "type":
+              computers[computerIndex].disc.type = parameter
+                break
+            case  "graphics_card_name":
+              computers[computerIndex].graphics_card.graphics_card_name = parameter
+                break
+            case  "memory":
+              computers[computerIndex].graphics_card.memory = parameter
+                break
+            case  "os":
+              computers[computerIndex].os = parameter
+                break
+            case  "disc_reader":
+              computers[computerIndex].disc_reader = parameter
+                break
+        }
+        computers = computers
     }
     function createComputersFromTxt () {
-        computers = []
+        let objects = []
         data.split('\n').forEach(computer => {
-            let object = { matryca: {}, procesor: {}, dysk: {}, "karta graficzna": {}, flat: {} }
+            let object = { screen: {}, processor: {}, disc: {}, graphics_card: {}, flat: {} }
             computer.split(';').forEach((parameter, index) => {
                 index < 15 ? object.flat[getValueFromIndex(index)] = parameter : ''
                 if (index === 0) {
                     object[getValueFromIndex(index)] = parameter
                 } else if (index > 0 && index < 5) {//matryca
-                    object.matryca[getValueFromIndex(index)] = parameter
+                    object.screen[getValueFromIndex(index)] = parameter
                 } else if (index > 4 && index < 8) {//procesor
-                    object.procesor[getValueFromIndex(index)] = parameter
+                    object.processor[getValueFromIndex(index)] = parameter
                 } else if (index === 8) {//RAM
                     object[getValueFromIndex(index)] = parameter
                 } else if (index > 8 && index < 11) {//dysk
-                    object.dysk[getValueFromIndex(index)] = parameter
+                    object.disc[getValueFromIndex(index)] = parameter
                 } else if (index > 10 && index < 13) {// karta
-                    object["karta graficzna"][getValueFromIndex(index)] = parameter
+                    object.graphics_card[getValueFromIndex(index)] = parameter
                 } else if (index === 13) {
                     object[getValueFromIndex(index)] = parameter
                 } else if (index === 14) {
                     object[getValueFromIndex(index)] = parameter
                 }
             })
-            computers = [...computers, object]
+            objects = [...objects, object]
         })
+        return objects
     }
     function createComputersFromXml () {
-        computers = []
-        // const cos = convert.xml2json(xmlData, {compact: true, spaces: 4})
-        // console.log(cos)
+        let objects = []
+        const options = {
+            spaces: 4,
+            trim: true,
+            object: true
+        }
+        const xmlDataAsJSObject = convert.xml2js(data, options)
+        xmlDataAsJSObject.elements[0].elements.forEach(laptop => {
+            objects = [...objects, mapObjectToComputer(laptop)]
+        })
+        return objects
     }
 </script>
 <div>
@@ -126,9 +167,9 @@
         position:relative;
     }
     #table-scroll {
-        height:600px;
-        overflow:auto;
-        margin-top:20px;
+        height: 100%;
+        overflow: auto;
+        margin-top: 20px;
     }
     #table-wrapper table {
         width:100%;

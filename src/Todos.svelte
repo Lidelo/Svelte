@@ -84,11 +84,6 @@
         max-width: 800px;
         margin: 10px auto;
     }
-    .logo {
-        display: block;
-        margin: 20px auto;
-        width: 50%;
-    }
     .todo-input {
         width: 100%;
         padding: 10px 20px;

@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/my-svelte-project.iml" filepath="$PROJECT_DIR$/.idea/my-svelte-project.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/svelte-app.iml" filepath="$PROJECT_DIR$/.idea/svelte-app.iml" />
     </modules>
   </component>
 </project>
