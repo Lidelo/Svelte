@@ -1,5 +1,8 @@
 import convert from 'xml-js'
 
+
+
+
 export function downloadBlobAsFile (blob, fileName) {
     const a = document.createElement("a")
     document.body.appendChild(a)
@@ -12,7 +15,9 @@ export function downloadBlobAsFile (blob, fileName) {
     window.URL.revokeObjectURL(url)
 }
 export function downloadExampleData (mode) {
-    const blob = new Blob([mode === 'txt' ? getExampleTxtData() : getExampleXmlData()],
+    const blobData = mode === 'txt' ? getExampleTxtData() : getExampleXmlData()
+    console.log(blobData)
+    const blob = new Blob([blobData],
         { type: `text/${mode};charset=utf-8` })
     downloadBlobAsFile(blob, `data.${mode}`)
 }
@@ -30,6 +35,7 @@ export function convertComputersToTxt (computers) {
     return localData
 }
 export function convertComputersToXml (computers) {
+    if (computers.length === 0) return ''
     const computersClone = JSON.parse(JSON.stringify(computers))
     let object = { laptops: { laptop: [] }}
     computersClone.forEach(computer => {
@@ -67,7 +73,6 @@ export function mapObjectToComputer (laptop) {
             mappedObject.flat[props.elements] = ''
             return
         }
-        console.log(props.elements)
         switch (props.name) {
             case "manufacturer":
                 if (!props.elements) {

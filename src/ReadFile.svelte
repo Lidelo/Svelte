@@ -1,5 +1,5 @@
 <script>
-    import { afterUpdate, createEventDispatcher, onMount } from "svelte";
+    import { createEventDispatcher, onMount } from "svelte";
     import { downloadExampleData } from './Helper'
     export let data
     export let typeOfData
@@ -17,10 +17,10 @@
               typeOfData = evt.target.id
             }
             reader.readAsText(file)
+            document.getElementById(evt.target.id).value = ""
         }
     })
 </script>
-
 <div>
     Wczytaj dane z txt:
     <input type="file" id="txt" name="file" accept=".txt"/>

@@ -1,64 +1,19 @@
-# svelte app
+# Integracja systemów + projekt naukowy realizacja
 
-This is a project template for [Svelte](https://svelte.dev) apps. It lives at https://github.com/sveltejs/template-webpack.
-
-To create a new project based on this template using [degit](https://github.com/Rich-Harris/degit):
-
-```bash
-npx degit sveltejs/template-webpack svelte-app
-cd svelte-app
-```
-
-*Note that you will need to have [Node.js](https://nodejs.org) installed.*
-
-
-## Get started
-
-Install the dependencies...
+Aby uruchomić projekt należy ściągnąć repo.
+Wymagania: node, git.
 
 ```bash
-cd svelte-app
+git clone https://github.com/Lidelo/Svelte.git
+cd ./Svelte
 npm install
-```
-
-...then start webpack:
-
-```bash
 npm run dev
 ```
+Po odpaleniu należy przejść do przeglądarki na adres localhost:5000 (możliwe że inny port będzie domyślny, np. 8080)
 
-Navigate to [localhost:8080](http://localhost:8080). You should see your app running. Edit a component file in `src`, save it, and the page should reload with your changes.
+## Strona jest również wystawiona na https://lidelo.github.io/
 
-
-## Deploying to the web
-
-### With [now](https://zeit.co/now)
-
-Install `now` if you haven't already:
-
-```bash
-npm install -g now
-```
-
-Then, from within your project folder:
-
-```bash
-now
-```
-
-As an alternative, use the [Now desktop client](https://zeit.co/download) and simply drag the unzipped project folder to the taskbar icon.
-
-### With [surge](https://surge.sh/)
-
-Install `surge` if you haven't already:
-
-```bash
-npm install -g surge
-```
-
-Then, from within your project folder:
-
-```bash
-npm run build
-surge public
-```
+Po naciśnięciu klawisza F12 i przejściu do zakładki Sources w DevTools można zobaczyć strukturę projektu.
+W katalogu webpack/src widnieje kod żródłowy programu
+W katalogu "lidelo.github.io" widnieje zbudowany kod programu
+![Alt text](devtools.png?raw=true "Title")
